@@ -1,6 +1,7 @@
-package com.vijay.lucene.test;
+package com.vijay.lucene.simple.sample;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,33 +29,33 @@ import org.apache.lucene.store.Directory;
  * @author vijay
  *
  */
-public class Writer {
+public class Writer implements Closeable {
 
-	public void write(final Directory dir, final Analyzer analyzer,
+	private final IndexWriter indexWriter;
+	
+	public Writer(final Directory dir, final Analyzer analyzer,
 			final Path docDir) throws IOException {
 		IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
 		iwc.setOpenMode(OpenMode.CREATE);
-		IndexWriter writer = new IndexWriter(dir, iwc);
-		indexDocs(writer, docDir);
-		writer.close();
+		this.indexWriter = new IndexWriter(dir, iwc);
 	}
 	
-	void indexDocs(final IndexWriter writer, Path path) throws IOException {
+	public void indexDocs(Path path) throws IOException {
 		if (Files.isDirectory(path)) {
 			Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 				@Override
 				public FileVisitResult visitFile(Path file,
 						BasicFileAttributes attrs) throws IOException {
-					indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
+					indexDoc(file, attrs.lastModifiedTime().toMillis());
 					return FileVisitResult.CONTINUE;
 				}
 			});
 		} else {
-			indexDoc(writer, path, Files.getLastModifiedTime(path).toMillis());
+			indexDoc(path, Files.getLastModifiedTime(path).toMillis());
 		}
 	}
 
-	void indexDoc(IndexWriter writer, Path file, long lastModified)
+	private void indexDoc(Path file, long lastModified)
 			throws IOException {
 		try (InputStream stream = Files.newInputStream(file)) {
 			Document doc = new Document();
@@ -64,13 +65,18 @@ public class Writer {
 			doc.add(new LongField("modified", lastModified, Field.Store.NO));
 			doc.add(new TextField("contents", new BufferedReader(
 					new InputStreamReader(stream, StandardCharsets.UTF_8))));
-			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+			if (this.indexWriter.getConfig().getOpenMode() == OpenMode.CREATE) {
 				System.out.println("adding " + file);
-				writer.addDocument(doc);
+				this.indexWriter.addDocument(doc);
 			} else {
 				System.out.println("updating " + file);
-				writer.updateDocument(new Term("path", file.toString()), doc);
+				this.indexWriter.updateDocument(new Term("path", file.toString()), doc);
 			}
 		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		this.indexWriter.close();
 	}
 }
