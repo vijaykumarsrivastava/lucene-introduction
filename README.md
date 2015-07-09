@@ -1,0 +1,1 @@
+# Lucene Hello Sample. #
