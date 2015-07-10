@@ -30,11 +30,12 @@ import org.apache.lucene.store.RAMDirectory;
  * @author vijay
  * 
  */
-public class Sample2 {
+public class Sample2_1 {
 
-	private static final String dataOrDocument = "Bharat is democratic country.";
-	private static final String queryString = "democratic";
-	private static final String fieldname = "contain";
+	private static final String DATA_OR_DOCUMENT = "Bharat is democratic country.";
+	private static final String QUERY_STRING = "democratic";
+	private static final String FIELD_NAME = "contain";
+	private static final int SEARCH_PAGE_SIZE = 10;
 
 	public static void main(String[] args) throws IOException, ParseException {
 
@@ -52,7 +53,7 @@ public class Sample2 {
 
 		// Prepare document.
 		Document doc = new Document();
-		doc.add(new Field(fieldname, dataOrDocument, TextField.TYPE_STORED));
+		doc.add(new Field(FIELD_NAME, DATA_OR_DOCUMENT, TextField.TYPE_STORED));
 
 		// Write document into memory.
 		writer.addDocument(doc);
@@ -65,12 +66,12 @@ public class Sample2 {
 		IndexSearcher isearcher = new IndexSearcher(reader);
 
 		// Create parser for given fieldName and analyzer.
-		QueryParser parser = new QueryParser(fieldname, analyzer);
+		QueryParser parser = new QueryParser(FIELD_NAME, analyzer);
 
 		// parse the given query.
-		Query query = parser.parse(queryString);
+		Query query = parser.parse(QUERY_STRING);
 		// fire the query.
-		ScoreDoc[] hits = isearcher.search(query, 1000).scoreDocs;
+		ScoreDoc[] hits = isearcher.search(query, SEARCH_PAGE_SIZE).scoreDocs;
 
 		if (hits.length == 0) {
 			System.out.println("No document found.");
