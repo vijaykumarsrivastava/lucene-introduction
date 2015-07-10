@@ -1,7 +1,7 @@
-# Sample 2_2 #
-* ** About ** Index the input data and store it into RAM directory and then search it.
+##Sample 2_2##
+* **About** Index the input data and store it into RAM directory and then search it.
 * **How to run?** Run the Sample2_2.java class. 
-* **Sample of input and output for Sample2_2.java class** 
+* **Sample of input and output for Sample2_2.java class:** 
 ```
 Please enter file text.
 Bharat is member of BRICS, G20 and SAARC group.
