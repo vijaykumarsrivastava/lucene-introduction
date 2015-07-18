@@ -68,7 +68,7 @@ public class Sample2_2 {
 		// Open reader in given directory.
 		DirectoryReader reader = DirectoryReader.open(directory);
 		// Create the searcher to document.
-		IndexSearcher isearcher = new IndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
 
 		// Create parser for given fieldName and analyzer.
 		QueryParser parser = new QueryParser(FIELD_NAME, analyzer);
@@ -82,14 +82,14 @@ public class Sample2_2 {
 			// parse the given query.
 			Query query = parser.parse(readLine);
 			// fire the query.
-			ScoreDoc[] hits = isearcher.search(query, SEARCH_PAGE_SIZE).scoreDocs;
+			ScoreDoc[] hits = searcher.search(query, SEARCH_PAGE_SIZE).scoreDocs;
 
 			if (hits.length == 0) {
 				System.out.println("No document found.");
 			} else {
 				System.out.println("Document found:");
 				for (int i = 0; i < hits.length; i++) {
-					Document hitDoc = isearcher.doc(hits[i].doc);
+					Document hitDoc = searcher.doc(hits[i].doc);
 					System.out.println(hitDoc.get(FIELD_NAME));
 				}
 			}
