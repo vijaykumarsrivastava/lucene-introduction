@@ -20,8 +20,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
 /**
- * This is simple sample for in memory directory. This is maven standalone
- * application. 
+ * Index the user input and search the user query.
+ * 
+ * Note: 'q' for quit
  * 
  * Lucene Version: 5.2.1
  * 
@@ -51,7 +52,7 @@ public class Sample2_2 {
 
 		// Prepare document.
 		Scanner docScanner = new Scanner(System.in);
-		System.out.println("Please enter file text.");
+		System.out.println("Please enter the document (as string).");
 		while((readLine = docScanner.nextLine()) != null) {
 			if(readLine.isEmpty()) {
 				break;
